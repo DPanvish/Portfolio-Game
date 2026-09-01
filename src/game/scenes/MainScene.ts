@@ -1,9 +1,18 @@
 import Phaser from 'phaser';
 import { pathWaypoints } from '@/lib/pathTemplate';
+import { mockExperiences, mockProjects, mockSkills } from '@/lib/mockData';
+
+// We'll combine our mock data to map them onto the waypoints
+const allNodes = [
+  ...mockExperiences.map(e => ({ type: 'experience', data: e })),
+  ...mockProjects.map(p => ({ type: 'project', data: p })),
+  ...mockSkills.map(s => ({ type: 'skill', data: s })),
+];
 
 export class MainScene extends Phaser.Scene {
   private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private nodeZones!: Phaser.Physics.Arcade.Group;
   private wasd!: {
     W: Phaser.Input.Keyboard.Key;
     A: Phaser.Input.Keyboard.Key;
@@ -15,22 +24,26 @@ export class MainScene extends Phaser.Scene {
     super({ key: 'MainScene' });
   }
 
-  preload() {
-    // We can load assets here later if needed
-  }
+  preload() {}
 
   create() {
     // 1. Draw the smooth vector path
-    this.drawPath();
+    this.drawPathLine();
 
-    // 2. Create the player (a sleek glowing orb)
+    // 2. Generate interactive nodes from mock data
+    this.generateDynamicNodes();
+
+    // 3. Create the player (a sleek glowing orb)
     this.createPlayer();
 
-    // 3. Set up camera to smoothly follow player
+    // 4. Set up camera to smoothly follow player
     this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
     this.cameras.main.setZoom(1.2);
 
-    // 4. Setup Input
+    // 5. Setup physics overlap between player and nodes
+    this.physics.add.overlap(this.player, this.nodeZones, this.handleNodeOverlap, undefined, this);
+
+    // 6. Setup Input
     if (this.input.keyboard) {
       this.cursors = this.input.keyboard.createCursorKeys();
       this.wasd = this.input.keyboard.addKeys('W,A,S,D') as any;
@@ -41,7 +54,7 @@ export class MainScene extends Phaser.Scene {
     this.handlePlayerMovement();
   }
 
-  private drawPath() {
+  private drawPathLine() {
     const graphics = this.add.graphics();
     graphics.lineStyle(4, 0x334155, 0.5); // Subtle glass border color for the path line
 
@@ -53,14 +66,45 @@ export class MainScene extends Phaser.Scene {
       graphics.lineTo(pathWaypoints[i].x, pathWaypoints[i].y);
     }
     graphics.strokePath();
+  }
 
-    // Draw glowing nodes at each waypoint
-    pathWaypoints.forEach((wp) => {
+  private generateDynamicNodes() {
+    this.nodeZones = this.physics.add.group();
+    const graphics = this.add.graphics();
+
+    // Only generate nodes up to the number of available waypoints
+    const nodeCount = Math.min(allNodes.length, pathWaypoints.length);
+
+    for (let i = 0; i < nodeCount; i++) {
+      const wp = pathWaypoints[i];
+      const nodeData = allNodes[i];
+
+      // Draw the glowing node
       graphics.fillStyle(0x0F172A, 1); // Dark inner
-      graphics.fillCircle(wp.x, wp.y, 12);
-      graphics.lineStyle(2, 0xA16207, 0.8); // Gold accent border
-      graphics.strokeCircle(wp.x, wp.y, 12);
-    });
+      graphics.fillCircle(wp.x, wp.y, 16);
+      
+      // Differentiate colors slightly based on type, or stick to gold accent
+      let borderColor = 0xA16207; // Gold default
+      if (nodeData.type === 'project') borderColor = 0x2563EB; // Blue for projects
+      if (nodeData.type === 'skill') borderColor = 0x22C55E; // Green for skills
+      
+      graphics.lineStyle(2, borderColor, 0.8);
+      graphics.strokeCircle(wp.x, wp.y, 16);
+
+      // Create an invisible physics zone for the trigger
+      const zone = this.add.zone(wp.x, wp.y, 40, 40);
+      this.physics.add.existing(zone);
+      
+      // Store the mock data inside the zone so we can access it on overlap
+      (zone as any).nodeData = nodeData;
+      this.nodeZones.add(zone);
+    }
+  }
+
+  private handleNodeOverlap(_player: any, _zone: any) {
+    const nodeData = _zone.nodeData;
+    // We will fire an event to our React UI here in Phase 5
+    // console.log("Entered node:", nodeData.type, nodeData.data.name || nodeData.data.title);
   }
 
   private createPlayer() {
