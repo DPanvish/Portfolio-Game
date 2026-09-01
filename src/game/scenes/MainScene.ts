@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { pathWaypoints } from '@/lib/pathTemplate';
 import { mockExperiences, mockProjects, mockSkills } from '@/lib/mockData';
+import { useGameStore } from '@/lib/store';
 
 // We'll combine our mock data to map them onto the waypoints
 const allNodes = [
@@ -103,8 +104,15 @@ export class MainScene extends Phaser.Scene {
 
   private handleNodeOverlap(_player: any, _zone: any) {
     const nodeData = _zone.nodeData;
-    // We will fire an event to our React UI here in Phase 5
-    // console.log("Entered node:", nodeData.type, nodeData.data.name || nodeData.data.title);
+    
+    // Get the current state
+    const store = useGameStore.getState();
+    
+    // Only dispatch if it's a new node to prevent infinite re-renders
+    if (store.activeNode?.data.id !== nodeData.data.id) {
+      store.setActiveNode(nodeData);
+      store.markNodeVisited(nodeData.data.id);
+    }
   }
 
   private createPlayer() {

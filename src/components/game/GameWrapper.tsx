@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import UIOverlay from "./UIOverlay";
 
 // We must dynamically import the Phaser game component with ssr: false
 // because Phaser requires the window/document objects which aren't available on the server.
@@ -15,8 +16,9 @@ const PhaserGame = dynamic(() => import("./PhaserGame"), {
 
 export default function GameWrapper() {
   return (
-    <div className="h-screen w-screen overflow-hidden bg-background">
+    <div className="relative h-screen w-screen overflow-hidden bg-background">
       <PhaserGame />
+      <UIOverlay />
     </div>
   );
 }
