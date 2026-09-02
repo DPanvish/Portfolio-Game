@@ -13,6 +13,10 @@ export default function PhaserGame() {
       type: Phaser.AUTO,
       width: '100%',
       height: '100%',
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
       parent: gameRef.current,
       backgroundColor: '#0F172A', // Our Deep Midnight Slate background
       physics: {
