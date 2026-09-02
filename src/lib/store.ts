@@ -9,15 +9,18 @@ interface GameState {
   activeNode: NodeData | null;
   visitedNodes: Set<string>;
   mobileMovement: { up: boolean; down: boolean; left: boolean; right: boolean };
+  gameReady: boolean;
   setActiveNode: (node: NodeData | null) => void;
   markNodeVisited: (id: string) => void;
   setMobileMovement: (dir: keyof GameState['mobileMovement'], isDown: boolean) => void;
+  setGameReady: (ready: boolean) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
   activeNode: null,
   visitedNodes: new Set(),
   mobileMovement: { up: false, down: false, left: false, right: false },
+  gameReady: false,
   setActiveNode: (node) => set({ activeNode: node }),
   markNodeVisited: (id) =>
     set((state) => {
@@ -29,4 +32,5 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({
       mobileMovement: { ...state.mobileMovement, [dir]: isDown },
     })),
+  setGameReady: (ready) => set({ gameReady: ready }),
 }));

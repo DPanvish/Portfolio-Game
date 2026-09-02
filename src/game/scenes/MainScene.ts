@@ -52,6 +52,11 @@ export class MainScene extends Phaser.Scene {
       this.cursors = this.input.keyboard.createCursorKeys();
       this.wasd = this.input.keyboard.addKeys('W,A,S,D') as any;
     }
+
+    // 7. Tell React the game is ready (with a slight delay for the cinematic loader)
+    setTimeout(() => {
+      useGameStore.getState().setGameReady(true);
+    }, 1500);
   }
 
   update() {
