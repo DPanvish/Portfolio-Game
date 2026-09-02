@@ -143,21 +143,22 @@ export class MainScene extends Phaser.Scene {
   private handlePlayerMovement() {
     const speed = 800; // Acceleration force
     let moved = false;
+    const { mobileMovement } = useGameStore.getState();
 
-    if (this.cursors.left.isDown || this.wasd.A.isDown) {
+    if (this.cursors.left.isDown || this.wasd.A.isDown || mobileMovement.left) {
       this.player.setAccelerationX(-speed);
       moved = true;
-    } else if (this.cursors.right.isDown || this.wasd.D.isDown) {
+    } else if (this.cursors.right.isDown || this.wasd.D.isDown || mobileMovement.right) {
       this.player.setAccelerationX(speed);
       moved = true;
     } else {
       this.player.setAccelerationX(0);
     }
 
-    if (this.cursors.up.isDown || this.wasd.W.isDown) {
+    if (this.cursors.up.isDown || this.wasd.W.isDown || mobileMovement.up) {
       this.player.setAccelerationY(-speed);
       moved = true;
-    } else if (this.cursors.down.isDown || this.wasd.S.isDown) {
+    } else if (this.cursors.down.isDown || this.wasd.S.isDown || mobileMovement.down) {
       this.player.setAccelerationY(speed);
       moved = true;
     } else {
