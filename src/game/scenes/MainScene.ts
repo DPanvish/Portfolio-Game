@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { pathWaypoints } from '@/lib/pathTemplate';
-import { mockExperiences, mockProjects, mockSkills, mockEducation, mockStartup, mockFootprint } from '@/lib/mockData';
+import { mockExperiences, mockProjects, mockSkills, mockEducation, mockStartup, mockFootprint } from '@/lib/data';
 import { useGameStore } from '@/lib/store';
 
 // We'll combine our mock data to map them onto the waypoints
