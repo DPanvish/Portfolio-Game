@@ -2,6 +2,7 @@
 
 import { useGameStore } from "@/lib/store";
 import { X } from "lucide-react";
+import GitHubCalendar from "react-github-calendar";
 
 export default function UIOverlay() {
   const activeNode = useGameStore((state) => state.activeNode);
@@ -73,6 +74,72 @@ export default function UIOverlay() {
                 className="h-full bg-accent transition-all duration-1000 ease-out" 
                 style={{ width: `${activeNode.data.level}%` }}
               />
+            </div>
+          </div>
+        )}
+
+        {activeNode.type === 'education' && (
+          <div>
+            <h2 className="mb-1 text-3xl font-semibold tracking-tight font-heading">
+              {activeNode.data.institution}
+            </h2>
+            <h3 className="mb-4 text-lg font-medium text-accent">
+              {activeNode.data.degree}
+            </h3>
+            <div className="flex justify-between text-sm text-muted-foreground border-t border-border pt-4 mt-4">
+              <span>{activeNode.data.location}</span>
+              <span>{activeNode.data.startDate} - {activeNode.data.endDate}</span>
+            </div>
+            <div className="mt-4 inline-block rounded-md bg-accent/10 px-3 py-1 text-sm font-semibold text-accent">
+              Score: {activeNode.data.score}
+            </div>
+          </div>
+        )}
+
+        {activeNode.type === 'startup' && (
+          <div>
+            <h2 className="mb-1 text-3xl font-semibold tracking-tight font-heading">
+              {activeNode.data.name}
+            </h2>
+            <h3 className="mb-4 text-lg font-medium text-destructive">
+              {activeNode.data.tagline}
+            </h3>
+            <p className="mb-6 text-muted-foreground">
+              {activeNode.data.description}
+            </p>
+            <div className="mb-6 rounded-lg bg-muted p-4">
+              <p className="text-sm italic text-foreground text-opacity-80">
+                "{activeNode.data.vision}"
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {activeNode.data.techStack.map((tech: string) => (
+                <span key={tech} className="rounded-md bg-background px-2 py-1 text-xs text-muted-foreground border border-border">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeNode.type === 'footprint' && (
+          <div>
+            <h2 className="mb-4 text-3xl font-semibold tracking-tight font-heading">
+              Coding Footprint
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Live GitHub contributions for <span className="font-semibold text-foreground">{activeNode.data.githubUsername}</span>
+            </p>
+            <div className="rounded-xl border border-border bg-muted/50 p-4 w-full overflow-x-auto">
+               <GitHubCalendar username={activeNode.data.githubUsername} colorScheme="dark" />
+            </div>
+            <div className="mt-6 flex justify-between gap-4 text-sm text-muted-foreground">
+               {activeNode.data.leetcodeUsername && (
+                 <div>LeetCode: <span className="text-foreground">{activeNode.data.leetcodeUsername}</span></div>
+               )}
+               {activeNode.data.codeforcesUsername && (
+                 <div>Codeforces: <span className="text-foreground">{activeNode.data.codeforcesUsername}</span></div>
+               )}
             </div>
           </div>
         )}

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export type NodeData = {
-  type: 'experience' | 'project' | 'skill';
+  type: 'experience' | 'project' | 'skill' | 'education' | 'startup' | 'footprint';
   data: any; // We'll keep it as any for the store, but it maps to our mockData types
 };
 
