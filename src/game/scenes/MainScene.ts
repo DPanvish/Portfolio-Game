@@ -1,12 +1,15 @@
 import Phaser from 'phaser';
 import { pathWaypoints } from '@/lib/pathTemplate';
-import { mockExperiences, mockProjects, mockSkills } from '@/lib/mockData';
+import { mockExperiences, mockProjects, mockSkills, mockEducation, mockStartup, mockFootprint } from '@/lib/mockData';
 import { useGameStore } from '@/lib/store';
 
 // We'll combine our mock data to map them onto the waypoints
 const allNodes = [
   ...mockExperiences.map(e => ({ type: 'experience', data: e })),
+  ...mockEducation.map(e => ({ type: 'education', data: e })),
   ...mockProjects.map(p => ({ type: 'project', data: p })),
+  { type: 'startup', data: mockStartup },
+  { type: 'footprint', data: mockFootprint },
   ...mockSkills.map(s => ({ type: 'skill', data: s })),
 ];
 
@@ -88,6 +91,9 @@ export class MainScene extends Phaser.Scene {
       let borderColor = 0xA16207; // Gold default
       if (nodeData.type === 'project') borderColor = 0x2563EB; // Blue for projects
       if (nodeData.type === 'skill') borderColor = 0x22C55E; // Green for skills
+      if (nodeData.type === 'education') borderColor = 0x9333EA; // Purple for education
+      if (nodeData.type === 'startup') borderColor = 0xDC2626; // Red for startup
+      if (nodeData.type === 'footprint') borderColor = 0xF59E0B; // Amber for footprint
       
       graphics.lineStyle(2, borderColor, 0.8);
       graphics.strokeCircle(wp.x, wp.y, 16);
