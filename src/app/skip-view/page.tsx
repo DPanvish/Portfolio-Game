@@ -8,7 +8,7 @@ import {
   mockSkills, 
   mockContact 
 } from '@/lib/data';
-import GitHubCalendar from 'react-github-calendar';
+import { GitHubCalendar } from 'react-github-calendar';
 import Link from 'next/link';
 
 export default function SkipView() {

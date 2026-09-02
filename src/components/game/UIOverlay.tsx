@@ -2,7 +2,7 @@
 
 import { useGameStore } from "@/lib/store";
 import { X } from "lucide-react";
-import GitHubCalendar from "react-github-calendar";
+import { GitHubCalendar } from "react-github-calendar";
 
 export default function UIOverlay() {
   const activeNode = useGameStore((state) => state.activeNode);
